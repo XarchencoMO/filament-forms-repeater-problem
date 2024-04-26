@@ -1,10 +1,15 @@
 {
-    "name": "filament forms problem",
+    "name": "filament/forms-repeater-problem",
     "type": "project",
-    "description": "repeater afterStateUpdated is not called problem",
+    "description": "reproduction of repeater afterStateUpdated is not called problem",
     "keywords": [
         "laravel",
-        "framework"
+        "framework",
+        "filament/forms",
+        "filament",
+        "forms",
+        "repeater",
+        "repeter-problem"
     ],
     "license": "MIT",
     "require": {
