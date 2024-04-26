@@ -2,8 +2,6 @@
 
 namespace App\Http\Livewire;
 
-use App\Models\Customer;
-use Closure;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -17,7 +15,7 @@ class MyFormComponent extends Component implements HasForms
 {
     use InteractsWithForms;
 
-    // Поля для платежей
+    // Fields for payments
     public $remainingPaymentAmount = 1000;
     public array $payments;
 
@@ -26,13 +24,8 @@ class MyFormComponent extends Component implements HasForms
     ];
 
     protected $messages = [
-        'remainingPaymentAmount.in' => 'Неоплаченная сумма заказа не может быть больше нуля',
+        'remainingPaymentAmount.in' => 'The unpaid order amount cannot be more than zero',
     ];
-
-    protected function getFormModel(): string
-    {
-        return Customer::class;
-    }
 
     protected function getFormSchema(): array
     {
@@ -43,15 +36,16 @@ class MyFormComponent extends Component implements HasForms
                     return $this->remainingPaymentAmount > 0;
                 })
                 ->schema([
-//                    Select::make('type')->required()
-//                        ->options(['test_1', 'test_2']),
+                    Select::make('type')->required()
+                        ->options(['test_1', 'test_2']),
                     TextInput::make('amount')
                         ->required()
                         ->numeric()
                         ->reactive()
                         ->maxValue(25000)
-                        // TODO это костыль, по неизвестной мне причине afterStateUpdated не работает с Repeater-ом
+
                 ])->afterStateUpdated(function ($state) {
+                    // TODO this method is not called
                     $this->remainingPaymentAmount = 1000 - array_sum(Arr::pluck($state, 'amount'));
                 })
         ];
@@ -60,16 +54,6 @@ class MyFormComponent extends Component implements HasForms
     public function submit()
     {
         dd($this->form->getState());
-
-
-//        DB::transaction(function () {
-//            Arr::map(Arr::get($this->form->getState(), 'payments'), function (array $item) {
-//                // Создаю платеж
-//                $this->order->payments()->create($item);
-//            });
-//            // Объявляю о завершении платежа (не подходит для случая оплаты интернет эквайринга)
-//            event(new PaymentFinished($this->order));
-//        });
 
         Notification::make()
             ->title(__('admin::common.success_create'))
